@@ -16,33 +16,53 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var table: UITableView!
     var data:String = ""
     var dic:NSDictionary?
+    var needReload:Bool = true
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.table.delegate = self;
         self.table.dataSource = self;
-        self.title = self.data
+        self.title = "详情"
+        
+        self.table.tableFooterView = UIView.init(frame: CGRectZero)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.data = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
-        let str:String = "https://gank.io/api/day/"+self.data
-        print("str:\(str)")
-        Alamofire.request(.GET, str).responseJSON { response in
-                        print(response.request)  // original URL request
-                        print(response.response) // URL response
-                        print(response.data)     // server data
-                        print(response.result)   // result of response serialization
-            
-            if let JSON = response.result.value {
-                self.dic = JSON as? NSDictionary
-                print("\(self.dic?.valueForKey("category"))")
-            }
-            print("数据返回\(response.result.value)");
+        
+        let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        
+        if ud.objectForKey("detail-\(self.data)") != nil {
+            let nsdata:NSData = ud.objectForKey("detail-\(self.data)") as! NSData
+            self.dic = NSKeyedUnarchiver.unarchiveObjectWithData(nsdata) as? NSDictionary
             self.table.reloadData()
         }
+        
+        if self.needReload {
+            let params:String = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
+            let str:String = "https://gank.io/api/day/"+params
+            print("str:\(str)")
+            Alamofire.request(.GET, str).responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    self.dic = JSON as? NSDictionary
+                    print("\(self.dic)")
+                    
+                    let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                    let nsdata:NSData = NSKeyedArchiver.archivedDataWithRootObject(self.dic!)
+                    ud.setObject(nsdata, forKey: "detail-\(self.data)")
+                }
+                print("数据返回\(response.result.value)");
+                self.table.reloadData()
+            }
+            self.needReload = false
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,20 +98,33 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let identifier:String = "detailcell"
+        
+        let cell:DetailCell = (tableView.dequeueReusableCellWithIdentifier(identifier) as? DetailCell)!
         
         let category:NSArray     = (self.dic?.valueForKey("category"))! as! NSArray
         let results:NSDictionary = self.dic?.valueForKey("results") as! NSDictionary
         let sectionArr:NSArray = results.valueForKey(category.objectAtIndex(indexPath.section) as! String) as! (NSArray)
         let dic:NSDictionary = sectionArr.objectAtIndex(indexPath.row) as! NSDictionary
         
+        let type:String = category.objectAtIndex(indexPath.section) as! String
         
+        if type == "休息视频" {
+            cell.colorTag.backgroundColor = UIColor.grayColor()
+        } else if type == "瞎推荐" {
+            cell.colorTag.backgroundColor = UIColor.lightGrayColor()
+        } else if type == "前端" {
+            cell.colorTag.backgroundColor = UIColor.cyanColor()
+        } else if type == "拓展资源" {
+            cell.colorTag.backgroundColor = UIColor.blueColor()
+        } else if type == "Android" {
+            cell.colorTag.backgroundColor = UIColor.greenColor()
+        } else if type == "iOS" {
+            cell.colorTag.backgroundColor = UIColor.redColor()
+        } else if type == "福利" {
+            cell.colorTag.backgroundColor = UIColor.brownColor()
+        }
         cell.textLabel?.text = dic.valueForKey("desc") as? String
-//        let URL = NSURL(string: "https://moonagic.com/images/avatar.jpg")!
-//        let resource = Resource(downloadURL: URL, cacheKey: "your_customized_key")
-//        cell.imageView?.kf_setImageWithResource(resource, placeholderImage: UIImage (named: "321"))
-        
-        
         return cell
     }
     

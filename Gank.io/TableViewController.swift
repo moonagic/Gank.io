@@ -14,6 +14,7 @@ class TableViewController: UITableViewController {
     
     var data:NSArray = []
     var sendStr:String = ""
+    var needReload:Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,28 +25,42 @@ class TableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
+        self.navigationController!.navigationBar.barTintColor = UIColor.orangeColor()
+        self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        self.navigationController!.navigationBar.barStyle = UIBarStyle.Black
+        self.navigationController!.navigationBar.tintColor = UIColor.whiteColor()
+        
+        self.tableView.tableFooterView = UIView.init(frame: CGRectZero)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
+        let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         
-        Alamofire.request(.GET, "https://gank.io/api/day/history").responseJSON { response in
-//            print(response.request)  // original URL request
-//            print(response.response) // URL response
-//            print(response.data)     // server data
-//            print(response.result)   // result of response serialization
-            
-//            if let JSON = response.result.value {
-//                print("JSON: \(JSON)")
-//            }
-            print("数据返回");
-            let str = response.result.value as! NSDictionary
-            self.data = str.valueForKey("results") as! NSArray
-            dispatch_async(dispatch_get_main_queue(), { 
-                self.tableView.reloadData()
-            })
-            
+        if ud.objectForKey("datelist") != nil {
+            self.data = ud.objectForKey("datelist") as! NSArray
+            self.tableView.reloadData()
         }
+        
+        if self.needReload {
+            Alamofire.request(.GET, "https://gank.io/api/day/history").responseJSON { response in
+                
+                print("数据返回");
+                let str = response.result.value as! NSDictionary
+                self.data = str.valueForKey("results") as! NSArray
+                let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                ud.setObject(self.data, forKey: "datelist")
+                
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.tableView.reloadData()
+                })
+                
+            }
+            self.needReload = false
+        }
+        
         
     }
 
@@ -69,8 +84,11 @@ class TableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = self.data[indexPath.row] as? String
+        let identifier:String = "datecell"
+        
+        let cell:DateCell = (tableView.dequeueReusableCellWithIdentifier(identifier) as? DateCell)!
+        let date:String = (self.data[indexPath.row] as? String)!
+        cell.contentLabel.text = "日期: \(date)"
         return cell
     }
     
@@ -121,9 +139,12 @@ class TableViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        let dc:DetailViewController = segue.destinationViewController as! DetailViewController
-        dc.data = self.sendStr
+        if segue.identifier == "showdetail" {
+            let dc:DetailViewController = segue.destinationViewController as! DetailViewController
+            dc.data = self.sendStr
+        }
+        
     }
     
-
+    
 }

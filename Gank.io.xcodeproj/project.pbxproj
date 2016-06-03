@@ -11,8 +11,9 @@
 		943CD9FB1CAD02BA00730DF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 943CD9F91CAD02BA00730DF4 /* Main.storyboard */; };
 		943CD9FD1CAD02BA00730DF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 943CD9FC1CAD02BA00730DF4 /* Assets.xcassets */; };
 		943CDA001CAD02BA00730DF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 943CD9FE1CAD02BA00730DF4 /* LaunchScreen.storyboard */; };
-		943CDA081CAD035100730DF4 /* MNNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943CDA071CAD035100730DF4 /* MNNetwork.swift */; };
 		943CDA0A1CAD03A700730DF4 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943CDA091CAD03A700730DF4 /* TableViewController.swift */; };
+		946CB4C51D016D04002F92CA /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946CB4C41D016D04002F92CA /* DateCell.swift */; };
+		946CB4E01D016FE1002F92CA /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946CB4DF1D016FE1002F92CA /* DetailCell.swift */; };
 		94AA2E3A1CAD122E00267E6C /* Kingfisher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AA2E231CAD11E800267E6C /* Kingfisher.framework */; };
 		94AA2E3B1CAD122E00267E6C /* Kingfisher.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 94AA2E231CAD11E800267E6C /* Kingfisher.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		94AA2E3F1CAD124200267E6C /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AA2DDF1CAD11DD00267E6C /* Alamofire.framework */; };
@@ -252,8 +253,9 @@
 		943CD9FC1CAD02BA00730DF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		943CD9FF1CAD02BA00730DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		943CDA011CAD02BA00730DF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		943CDA071CAD035100730DF4 /* MNNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MNNetwork.swift; sourceTree = "<group>"; };
 		943CDA091CAD03A700730DF4 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		946CB4C41D016D04002F92CA /* DateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
+		946CB4DF1D016FE1002F92CA /* DetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
 		94AA2DD41CAD11DD00267E6C /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = "../../Downloads/Alamofire-master/Alamofire.xcodeproj"; sourceTree = "<group>"; };
 		94AA2E131CAD11E800267E6C /* Kingfisher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kingfisher.xcodeproj; path = "../../Downloads/Kingfisher-master/Kingfisher.xcodeproj"; sourceTree = "<group>"; };
 		94AA2E451CAD2A1900267E6C /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
@@ -301,12 +303,13 @@
 			children = (
 				943CD9F51CAD02BA00730DF4 /* AppDelegate.swift */,
 				943CDA091CAD03A700730DF4 /* TableViewController.swift */,
-				943CDA071CAD035100730DF4 /* MNNetwork.swift */,
 				94B0F3821CAE116D0056CCE1 /* DetailViewController.swift */,
 				943CD9F91CAD02BA00730DF4 /* Main.storyboard */,
 				943CD9FC1CAD02BA00730DF4 /* Assets.xcassets */,
 				943CD9FE1CAD02BA00730DF4 /* LaunchScreen.storyboard */,
 				943CDA011CAD02BA00730DF4 /* Info.plist */,
+				946CB4C41D016D04002F92CA /* DateCell.swift */,
+				946CB4DF1D016FE1002F92CA /* DetailCell.swift */,
 			);
 			path = Gank.io;
 			sourceTree = "<group>";
@@ -633,7 +636,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				943CDA081CAD035100730DF4 /* MNNetwork.swift in Sources */,
+				946CB4C51D016D04002F92CA /* DateCell.swift in Sources */,
+				946CB4E01D016FE1002F92CA /* DetailCell.swift in Sources */,
 				943CD9F61CAD02BA00730DF4 /* AppDelegate.swift in Sources */,
 				943CDA0A1CAD03A700730DF4 /* TableViewController.swift in Sources */,
 				94B0F3831CAE116D0056CCE1 /* DetailViewController.swift in Sources */,
