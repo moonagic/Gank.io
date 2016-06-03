@@ -89,6 +89,7 @@ class TableViewController: UITableViewController {
         let cell:DateCell = (tableView.dequeueReusableCellWithIdentifier(identifier) as? DateCell)!
         let date:String = (self.data[indexPath.row] as? String)!
         cell.contentLabel.text = "日期: \(date)"
+        cell.colorTag.backgroundColor = UIColor.orangeColor()
         return cell
     }
     
