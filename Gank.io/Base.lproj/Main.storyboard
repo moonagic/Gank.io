@@ -10,27 +10,27 @@
         <scene sceneID="a6t-V9-ihY">
             <objects>
                 <tableViewController id="5j6-Y6-81E" customClass="TableViewController" customModule="Gank_io" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="c2c-Bf-Y6A">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="28" sectionFooterHeight="28" id="c2c-Bf-Y6A">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="datecell" id="QCQ-Cx-6oG" customClass="DateCell" customModule="Gank_io" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="datecell" rowHeight="48" id="QCQ-Cx-6oG" customClass="DateCell" customModule="Gank_io" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="600" height="48"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QCQ-Cx-6oG" id="TnG-kh-80l">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="47.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IbB-lk-tXp">
-                                            <rect key="frame" x="0.0" y="0.0" width="4" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="4" height="47.5"/>
                                             <color key="backgroundColor" red="1" green="0.34964277644046482" blue="0.30810787418006136" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="4" id="Bdl-kU-Fk0"/>
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zMl-U5-TOF">
-                                            <rect key="frame" x="12" y="11" width="580" height="21"/>
+                                            <rect key="frame" x="12" y="13.5" width="580" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="JRw-Hw-dDe"/>
                                             </constraints>
@@ -60,7 +60,12 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="干货集中营" id="ALe-oU-ZKa">
-                        <barButtonItem key="rightBarButtonItem" title="About" id="FuO-2T-blu">
+                        <barButtonItem key="leftBarButtonItem" title="分类" id="xie-H2-lii">
+                            <connections>
+                                <action selector="switchPressed:" destination="5j6-Y6-81E" id="pWh-qd-zsX"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="关于" id="FuO-2T-blu">
                             <connections>
                                 <segue destination="I3d-ai-0nK" kind="show" id="wT2-kg-4iU"/>
                             </connections>
@@ -74,7 +79,7 @@
             </objects>
             <point key="canvasLocation" x="1179" y="370"/>
         </scene>
-        <!--About-->
+        <!--关于-->
         <scene sceneID="LzC-by-Iy1">
             <objects>
                 <viewController id="I3d-ai-0nK" sceneMemberID="viewController">
@@ -102,7 +107,7 @@
                             <constraint firstItem="6G1-20-kO1" firstAttribute="leading" secondItem="ck7-IP-8CJ" secondAttribute="leadingMargin" id="wte-Ae-Jza"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="About" id="usL-Sb-TWm"/>
+                    <navigationItem key="navigationItem" title="关于" id="usL-Sb-TWm"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xi3-VO-pTf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

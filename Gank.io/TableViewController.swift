@@ -9,12 +9,16 @@
 import UIKit
 import Alamofire
 import Kingfisher
+import SafariServices
 
 class TableViewController: UITableViewController {
     
     var data:NSArray = []
+    var dataOfiOS:NSArray = []
+    var dataOfAndorid:NSArray = []
     var sendStr:String = ""
     var needReload:Bool = true
+    var mode:NSInteger = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,24 +42,13 @@ class TableViewController: UITableViewController {
         super.viewWillAppear(animated);
         let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         
-        if ud.objectForKey("datelist") != nil {
-            self.data = ud.objectForKey("datelist") as! NSArray
+        if let data:NSArray = ud.objectForKey("datelist") as? NSArray {
+            self.data = data
             self.tableView.reloadData()
         }
         
         if self.needReload {
-            Alamofire.request(.GET, "https://gank.io/api/day/history").responseJSON { response in
-                let str = response.result.value as! NSDictionary
-                self.data = str.valueForKey("results") as! NSArray
-                let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-                ud.setObject(self.data, forKey: "datelist")
-                
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.tableView.reloadData()
-                })
-                
-            }
+            self.loadData()
             self.needReload = false
         }
         
@@ -72,29 +65,56 @@ class TableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return self.data.count
+        if mode == 1 {
+            return self.data.count
+        } else if mode == 2 {
+            return self.dataOfiOS.count
+        } else if mode == 3 {
+            return self.dataOfAndorid.count
+        }
+        return 0;
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        self.sendStr = (self.data[indexPath.row] as? String)!
-        performSegueWithIdentifier("showdetail", sender: nil)
+        
+        if mode == 1 {
+            self.sendStr = (self.data[indexPath.row] as? String)!
+            performSegueWithIdentifier("showdetail", sender: nil)
+        } else if mode == 2 {
+            let dic:NSDictionary = self.dataOfiOS[indexPath.row] as! NSDictionary
+            let url:String = dic.valueForKey("url") as! String
+            self.openUrlWithSafariViewContoller(url)
+        } else if mode == 3 {
+            let dic:NSDictionary = self.dataOfAndorid[indexPath.row] as! NSDictionary
+            let url:String = dic.valueForKey("url") as! String
+            self.openUrlWithSafariViewContoller(url)
+        }
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier:String = "datecell"
         
         let cell:DateCell = (tableView.dequeueReusableCellWithIdentifier(identifier) as? DateCell)!
-        let date:String = (self.data[indexPath.row] as? String)!
-        cell.contentLabel.text = "日期: \(date)"
-        cell.colorTag.backgroundColor = UIColor.orangeColor()
+        if mode == 1 {
+            let date:String = (self.data[indexPath.row] as? String)!
+            cell.contentLabel.text = "日期: \(date)"
+            cell.colorTag.backgroundColor = UIColor.orangeColor()
+        } else if mode == 2 {
+            let dic:NSDictionary = self.dataOfiOS[indexPath.row] as! NSDictionary
+            let desc:String = dic.valueForKey("desc") as! String
+            cell.contentLabel.text = "\(desc)"
+            cell.colorTag.backgroundColor = UIColor.orangeColor()
+        } else if mode == 3 {
+            let dic:NSDictionary = self.dataOfAndorid[indexPath.row] as! NSDictionary
+            let desc:String = dic.valueForKey("desc") as! String
+            cell.contentLabel.text = "\(desc)"
+            cell.colorTag.backgroundColor = UIColor.orangeColor()
+        }
+        
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 60
-    }
-
     
     /*
     // Override to support conditional editing of the table view.
@@ -145,5 +165,87 @@ class TableViewController: UITableViewController {
         
     }
     
+    func loadData() {
+        if self.mode == 1 {
+            Alamofire.request(.GET, baseUrl+url_dayhistory).responseJSON { response in
+                let str = response.result.value as! NSDictionary
+                self.data = str.valueForKey("results") as! NSArray
+                let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                ud.setObject(self.data, forKey: "datelist")
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.tableView.reloadData()
+                })
+                
+            }
+        } else if self.mode == 2 {
+            let count:NSInteger = 50
+            let page:NSInteger = self.dataOfiOS.count/50
+            
+            Alamofire.request(.GET, baseUrl+url_data+"iOS/\(count)/\(page)").responseJSON { response in
+                let str = response.result.value as! NSDictionary
+                self.dataOfiOS = str.valueForKey("results") as! NSArray
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.tableView.reloadData()
+                })
+                
+            }
+        } else if self.mode == 3 {
+            let count:NSInteger = 50
+            let page:NSInteger = self.dataOfAndorid.count/50
+            
+            Alamofire.request(.GET, baseUrl+url_data+"Android/\(count)/\(page)").responseJSON { response in
+                let str = response.result.value as! NSDictionary
+                self.dataOfAndorid = str.valueForKey("results") as! NSArray
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.tableView.reloadData()
+                })
+                
+            }
+        }
+    }
+    
+    @IBAction func switchPressed(sender: AnyObject) {
+        let alertController = UIAlertController(title: "选择分类", message: "", preferredStyle: .ActionSheet)
+        
+        // date
+        let dateAction = UIAlertAction(title: "Date", style: .Default) { (action:UIAlertAction!) in
+            print("you have pressed the iOS button");
+            self.title = "干货集中营"
+            self.mode = 1
+            self.loadData()
+        }
+        alertController.addAction(dateAction)
+        // iOS
+        let iOSAction = UIAlertAction(title: "iOS", style: .Default) { (action:UIAlertAction!) in
+            print("you have pressed the iOS button");
+            self.title = "iOS"
+            self.mode = 2
+            self.loadData()
+        }
+        alertController.addAction(iOSAction)
+        // Android
+        let androidAction = UIAlertAction(title: "Android", style: .Default) { (action:UIAlertAction!) in
+            print("you have pressed the Android button");
+            self.title = "Android"
+            self.mode = 3
+            self.loadData()
+        }
+        alertController.addAction(androidAction)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action:UIAlertAction!) in
+            print("you have pressed the cancel button");
+        }
+        alertController.addAction(cancelAction)
+        
+        self.presentViewController(alertController, animated: true, completion:nil)
+    }
+    
+    func openUrlWithSafariViewContoller(urlStr:String) {
+        let safariVC = SFSafariViewController(URL: NSURL(string:urlStr)!, entersReaderIfAvailable: true)
+        
+        presentViewController(safariVC, animated: true, completion: nil)
+        
+    }
     
 }

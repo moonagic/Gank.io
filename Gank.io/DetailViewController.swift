@@ -33,20 +33,19 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         
-        if ud.objectForKey("detail-\(self.data)") != nil {
-            let nsdata:NSData = ud.objectForKey("detail-\(self.data)") as! NSData
-            self.dic = NSKeyedUnarchiver.unarchiveObjectWithData(nsdata) as? NSDictionary
+        if let data:NSData = ud.objectForKey("detail-\(self.data)") as? NSData {
+            self.dic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary
             self.table.reloadData()
         }
         
         if self.needReload {
             let params:String = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
-            let str:String = "https://gank.io/api/day/"+params
+            let str:String = baseUrl+url_day+params
             Alamofire.request(.GET, str).responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
-                print(response.result)   // result of response serialization
+//                print(response.request)  // original URL request
+//                print(response.response) // URL response
+//                print(response.data)     // server data
+//                print(response.result)   // result of response serialization
                 
                 if let JSON = response.result.value {
                     self.dic = JSON as? NSDictionary
@@ -162,11 +161,11 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - SFSafariViewControllerDelegate
     
     func safariViewController(controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
-        print(#function)
+//        print(#function)
     }
     
     func safariViewControllerDidFinish(controller: SFSafariViewController) {
-        print(#function)
+//        print(#function)
     }
 
 }
