@@ -45,8 +45,6 @@ class TableViewController: UITableViewController {
         
         if self.needReload {
             Alamofire.request(.GET, "https://gank.io/api/day/history").responseJSON { response in
-                
-                print("数据返回");
                 let str = response.result.value as! NSDictionary
                 self.data = str.valueForKey("results") as! NSArray
                 let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()

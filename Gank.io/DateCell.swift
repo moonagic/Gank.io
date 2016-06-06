@@ -11,7 +11,4 @@ class DateCell: UITableViewCell {
     @IBOutlet weak var colorTag: UIView!
     @IBOutlet weak var contentLabel: UILabel!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
 }

@@ -42,7 +42,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if self.needReload {
             let params:String = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
             let str:String = "https://gank.io/api/day/"+params
-            print("str:\(str)")
             Alamofire.request(.GET, str).responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -51,13 +50,11 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 
                 if let JSON = response.result.value {
                     self.dic = JSON as? NSDictionary
-                    print("\(self.dic)")
                     
                     let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
                     let nsdata:NSData = NSKeyedArchiver.archivedDataWithRootObject(self.dic!)
                     ud.setObject(nsdata, forKey: "detail-\(self.data)")
                 }
-                print("数据返回\(response.result.value)");
                 self.table.reloadData()
             }
             self.needReload = false
@@ -137,7 +134,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let sectionArr:NSArray = results.valueForKey(category.objectAtIndex(indexPath.section) as! String) as! (NSArray)
         let dic:NSDictionary = sectionArr.objectAtIndex(indexPath.row) as! NSDictionary
         let str:String = (dic.valueForKey("url") as? String)!
-        self.openUrl(str)
+        self.openUrlWithSafariViewContoller(str)
     }
 
     
@@ -150,8 +147,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         print("prepareForSegue")
     }
     
-    func openUrl(url:String) {
-        let safariVC = SFSafariViewController(URL: NSURL(string:url)!, entersReaderIfAvailable: true)
+    func openUrlWithSafariViewContoller(urlStr:String) {
+        let safariVC = SFSafariViewController(URL: NSURL(string:urlStr)!, entersReaderIfAvailable: true)
         
         presentViewController(
             safariVC,
