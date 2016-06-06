@@ -124,7 +124,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         } else if type == "福利" {
             cell.colorTag.backgroundColor = UIColor.brownColor()
         }
-        cell.textLabel?.text = dic.valueForKey("desc") as? String
+        
+        cell.titleLabel.text = dic.valueForKey("desc") as? String
         return cell
     }
     
