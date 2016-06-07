@@ -196,6 +196,7 @@ class TableViewController: UITableViewController {
                 ud.setObject(self.data, forKey: "datelist")
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.tableView.mj_footer.endRefreshing()
                     self.tableView.reloadData()
                 })
                 
