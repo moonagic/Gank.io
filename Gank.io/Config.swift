@@ -9,7 +9,7 @@
 let baseUrl:String = "https://gank.io/api/"
 
 let url_dayhistory:String = "day/history"
-let url_day:String = "day"
+let url_day:String = "day/"
 let url_data:String = "data/"
 
 

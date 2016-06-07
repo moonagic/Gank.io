@@ -8,7 +8,6 @@
 
 import UIKit
 import Alamofire
-import SwiftyJSON
 import SafariServices
 
 class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -41,6 +40,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if self.needReload {
             let params:String = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
             let str:String = baseUrl+url_day+params
+            print(str)
             Alamofire.request(.GET, str).responseJSON { response in
 //                print(response.request)  // original URL request
 //                print(response.response) // URL response
@@ -49,6 +49,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 
                 if let JSON = response.result.value {
                     self.dic = JSON as? NSDictionary
+                    print(self.dic)
                     
                     let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
                     let nsdata:NSData = NSKeyedArchiver.archivedDataWithRootObject(self.dic!)

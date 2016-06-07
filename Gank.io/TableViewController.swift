@@ -8,14 +8,13 @@
 
 import UIKit
 import Alamofire
-import Kingfisher
 import SafariServices
 
 class TableViewController: UITableViewController {
     
     var data:NSArray = []
-    var dataOfiOS:NSArray = []
-    var dataOfAndorid:NSArray = []
+    var dataOfiOS:NSMutableArray = []
+    var dataOfAndorid:NSMutableArray = []
     var sendStr:String = ""
     var needReload:Bool = true
     var mode:NSInteger = 1
@@ -52,12 +51,13 @@ class TableViewController: UITableViewController {
 //            }];
         
         self.tableView.mj_footer = MJRefreshBackNormalFooter(refreshingBlock: {
-            self.tableView.mj_footer.endRefreshing()
+//            self.tableView.mj_footer.endRefreshing()
+            self.loadData()
         })
     }
     
     func refreshData() {
-        print(#function)
+        self.tableView.mj_header.endRefreshing()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -202,11 +202,29 @@ class TableViewController: UITableViewController {
             }
         } else if self.mode == 2 {
             let count:NSInteger = 50
-            let page:NSInteger = self.dataOfiOS.count/50
-            
+            let page:NSInteger = self.dataOfiOS.count/count+1
+            print(baseUrl+url_data+"iOS/\(count)/\(page)")
             Alamofire.request(.GET, baseUrl+url_data+"iOS/\(count)/\(page)").responseJSON { response in
                 let str = response.result.value as! NSDictionary
-                self.dataOfiOS = str.valueForKey("results") as! NSArray
+                let tmpdata:NSArray = str.valueForKey("results") as! NSArray
+                if tmpdata.count > 0 {
+                    if page == 1 {
+                        self.dataOfiOS = tmpdata.mutableCopy() as! NSMutableArray
+                    } else {
+                        for i in 0 ..< tmpdata.count {
+                            let dic:NSDictionary = tmpdata.objectAtIndex(i) as! NSDictionary
+                            self.dataOfiOS.addObject(dic)
+                        }
+                    }
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.tableView.mj_footer.endRefreshing()
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    })
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), {
                     self.tableView.reloadData()
                 })
@@ -214,11 +232,29 @@ class TableViewController: UITableViewController {
             }
         } else if self.mode == 3 {
             let count:NSInteger = 50
-            let page:NSInteger = self.dataOfAndorid.count/50
+            let page:NSInteger = self.dataOfAndorid.count/count
             
             Alamofire.request(.GET, baseUrl+url_data+"Android/\(count)/\(page)").responseJSON { response in
                 let str = response.result.value as! NSDictionary
-                self.dataOfAndorid = str.valueForKey("results") as! NSArray
+                let tmpdata:NSArray = str.valueForKey("results") as! NSArray
+                if tmpdata.count > 0 {
+                    if page == 1 {
+                        self.dataOfAndorid = tmpdata.mutableCopy() as! NSMutableArray
+                    } else {
+                        for i in 0 ..< tmpdata.count {
+                            let dic:NSDictionary = tmpdata.objectAtIndex(i) as! NSDictionary
+                            self.dataOfAndorid.addObject(dic)
+                        }
+                    }
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.tableView.mj_footer.endRefreshing()
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    })
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), {
                     self.tableView.reloadData()
                 })
@@ -235,6 +271,7 @@ class TableViewController: UITableViewController {
             print("you have pressed the iOS button");
             self.title = "干货集中营"
             self.mode = 1
+            self.tableView.reloadData()
             self.loadData()
         }
         alertController.addAction(dateAction)
@@ -243,6 +280,7 @@ class TableViewController: UITableViewController {
             print("you have pressed the iOS button");
             self.title = "iOS"
             self.mode = 2
+            self.tableView.reloadData()
             self.loadData()
         }
         alertController.addAction(iOSAction)
@@ -251,6 +289,7 @@ class TableViewController: UITableViewController {
             print("you have pressed the Android button");
             self.title = "Android"
             self.mode = 3
+            self.tableView.reloadData()
             self.loadData()
         }
         alertController.addAction(androidAction)
