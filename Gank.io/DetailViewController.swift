@@ -11,7 +11,7 @@ import Alamofire
 import SwiftyJSON
 import SafariServices
 
-class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SFSafariViewControllerDelegate {
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var table: UITableView!
     var data:String = ""
@@ -64,10 +64,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func load(dic: NSDictionary) {
-        
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -149,23 +145,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func openUrlWithSafariViewContoller(urlStr:String) {
         let safariVC = SFSafariViewController(URL: NSURL(string:urlStr)!, entersReaderIfAvailable: true)
         
-        presentViewController(
-            safariVC,
-            animated: true,
-            completion: nil)
-        
-        safariVC.delegate = self
+        presentViewController(safariVC, animated: true, completion: nil)
     }
     
-    // =========================================================================
-    // MARK: - SFSafariViewControllerDelegate
-    
-    func safariViewController(controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
-//        print(#function)
-    }
-    
-    func safariViewControllerDidFinish(controller: SFSafariViewController) {
-//        print(#function)
-    }
-
 }

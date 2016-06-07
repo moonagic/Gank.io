@@ -36,6 +36,28 @@ class TableViewController: UITableViewController {
         
         self.tableView.tableFooterView = UIView.init(frame: CGRectZero)
         
+        setupHeader()
+    }
+    
+    func setupHeader() {
+//        MJRefreshNormalHeader *header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+        let header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction:#selector(refreshData))
+        header.automaticallyChangeAlpha = true;
+        // 隐藏时间
+        header.lastUpdatedTimeLabel.hidden = true;
+        self.tableView.mj_header = header;
+        
+//        self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//            [weakSelf loadData:[weakSelf.data count] end:[weakSelf.data count]+10];
+//            }];
+        
+        self.tableView.mj_footer = MJRefreshBackNormalFooter(refreshingBlock: {
+            self.tableView.mj_footer.endRefreshing()
+        })
+    }
+    
+    func refreshData() {
+        print(#function)
     }
     
     override func viewWillAppear(animated: Bool) {
