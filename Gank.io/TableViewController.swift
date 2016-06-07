@@ -280,7 +280,7 @@ class TableViewController: UITableViewController {
             print("you have pressed the iOS button");
             self.title = "iOS"
             self.mode = 2
-            self.tableView.reloadData()
+            self.tableView.mj_header.beginRefreshing()
             self.loadData()
         }
         alertController.addAction(iOSAction)
@@ -289,7 +289,7 @@ class TableViewController: UITableViewController {
             print("you have pressed the Android button");
             self.title = "Android"
             self.mode = 3
-            self.tableView.reloadData()
+            self.tableView.mj_header.beginRefreshing()
             self.loadData()
         }
         alertController.addAction(androidAction)
