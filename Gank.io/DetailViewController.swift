@@ -41,21 +41,29 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             let params:String = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
             let str:String = baseUrl+url_day+params
             print(str)
+            weak var weakSelf = self
             Alamofire.request(.GET, str).responseJSON { response in
 //                print(response.request)  // original URL request
 //                print(response.response) // URL response
 //                print(response.data)     // server data
 //                print(response.result)   // result of response serialization
                 
-                if let JSON = response.result.value {
-                    self.dic = JSON as? NSDictionary
-                    print(self.dic)
-                    
-                    let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-                    let nsdata:NSData = NSKeyedArchiver.archivedDataWithRootObject(self.dic!)
-                    ud.setObject(nsdata, forKey: "detail-\(self.data)")
+                if let strongSelf = weakSelf {
+                    if let JSON = response.result.value {
+                        weakSelf!.dic = JSON as? NSDictionary
+                        print(strongSelf.dic)
+                        
+                        let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                        let nsdata:NSData = NSKeyedArchiver.archivedDataWithRootObject(self.dic!)
+                        ud.setObject(nsdata, forKey: "detail-\(strongSelf.data)")
+                    }
+                    dispatch_async(dispatch_get_main_queue()) {
+                        strongSelf.table.reloadData()
+                    }
                 }
-                self.table.reloadData()
+                
+                
+                
             }
             self.needReload = false
         }

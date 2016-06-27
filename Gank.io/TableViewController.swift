@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import SafariServices
+import MJRefresh
 
 class TableViewController: UITableViewController {
     
@@ -189,77 +190,81 @@ class TableViewController: UITableViewController {
     
     func loadData() {
         if self.mode == 1 {
+            weak var weakSelf = self
             Alamofire.request(.GET, baseUrl+url_dayhistory).responseJSON { response in
-                let str = response.result.value as! NSDictionary
-                self.data = str.valueForKey("results") as! NSArray
-                let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-                ud.setObject(self.data, forKey: "datelist")
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.tableView.mj_footer.endRefreshing()
-                    self.tableView.reloadData()
-                })
-                
+                if let strongSelf = weakSelf {
+                    let str = response.result.value as! NSDictionary
+                    self.data = str.valueForKey("results") as! NSArray
+                    let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                    ud.setObject(strongSelf.data, forKey: "datelist")
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        strongSelf.tableView.mj_footer.endRefreshing()
+                        strongSelf.tableView.reloadData()
+                    })
+                }
             }
         } else if self.mode == 2 {
             let count:NSInteger = 50
             let page:NSInteger = self.dataOfiOS.count/count+1
-            print(baseUrl+url_data+"iOS/\(count)/\(page)")
+            weak var weakSelf = self
             Alamofire.request(.GET, baseUrl+url_data+"iOS/\(count)/\(page)").responseJSON { response in
-                let str = response.result.value as! NSDictionary
-                let tmpdata:NSArray = str.valueForKey("results") as! NSArray
-                if tmpdata.count > 0 {
-                    if page == 1 {
-                        self.dataOfiOS = tmpdata.mutableCopy() as! NSMutableArray
-                    } else {
-                        for i in 0 ..< tmpdata.count {
-                            let dic:NSDictionary = tmpdata.objectAtIndex(i) as! NSDictionary
-                            self.dataOfiOS.addObject(dic)
+                if let strongSelf = weakSelf {
+                    let str = response.result.value as! NSDictionary
+                    let tmpdata:NSArray = str.valueForKey("results") as! NSArray
+                    if tmpdata.count > 0 {
+                        if page == 1 {
+                            strongSelf.dataOfiOS = tmpdata.mutableCopy() as! NSMutableArray
+                        } else {
+                            for i in 0 ..< tmpdata.count {
+                                let dic:NSDictionary = tmpdata.objectAtIndex(i) as! NSDictionary
+                                strongSelf.dataOfiOS.addObject(dic)
+                            }
                         }
+                        dispatch_async(dispatch_get_main_queue(), {
+                            strongSelf.tableView.mj_footer.endRefreshing()
+                        })
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            strongSelf.tableView.mj_footer.endRefreshingWithNoMoreData()
+                        })
                     }
+                    
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.tableView.mj_footer.endRefreshing()
-                    })
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                        strongSelf.tableView.reloadData()
                     })
                 }
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.tableView.reloadData()
-                })
-                
             }
         } else if self.mode == 3 {
             let count:NSInteger = 50
             let page:NSInteger = self.dataOfAndorid.count/count
-            
+            weak var weakSelf = self
             Alamofire.request(.GET, baseUrl+url_data+"Android/\(count)/\(page)").responseJSON { response in
-                let str = response.result.value as! NSDictionary
-                let tmpdata:NSArray = str.valueForKey("results") as! NSArray
-                if tmpdata.count > 0 {
-                    if page == 1 {
-                        self.dataOfAndorid = tmpdata.mutableCopy() as! NSMutableArray
-                    } else {
-                        for i in 0 ..< tmpdata.count {
-                            let dic:NSDictionary = tmpdata.objectAtIndex(i) as! NSDictionary
-                            self.dataOfAndorid.addObject(dic)
+                if let strongSelf = weakSelf {
+                    let str = response.result.value as! NSDictionary
+                    let tmpdata:NSArray = str.valueForKey("results") as! NSArray
+                    if tmpdata.count > 0 {
+                        if page == 1 {
+                            strongSelf.dataOfAndorid = tmpdata.mutableCopy() as! NSMutableArray
+                        } else {
+                            for i in 0 ..< tmpdata.count {
+                                let dic:NSDictionary = tmpdata.objectAtIndex(i) as! NSDictionary
+                                strongSelf.dataOfAndorid.addObject(dic)
+                            }
                         }
+                        dispatch_async(dispatch_get_main_queue(), {
+                            strongSelf.tableView.mj_footer.endRefreshing()
+                        })
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            strongSelf.tableView.mj_footer.endRefreshingWithNoMoreData()
+                        })
                     }
+                    
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.tableView.mj_footer.endRefreshing()
-                    })
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                        strongSelf.tableView.reloadData()
                     })
                 }
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.tableView.reloadData()
-                })
-                
             }
         }
     }
