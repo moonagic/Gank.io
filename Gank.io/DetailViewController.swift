@@ -86,7 +86,11 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let category:NSArray     = (self.dic?.valueForKey("category"))! as! NSArray
-        return category.objectAtIndex(section) as? String
+        var title:String! = category.objectAtIndex(section) as! String
+        if title == "Android" {
+            title = "Other"
+        }
+        return title
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

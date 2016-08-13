@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--干货集中营-->
+        <!--Mank-->
         <scene sceneID="a6t-V9-ihY">
             <objects>
                 <tableViewController id="5j6-Y6-81E" customClass="TableViewController" customModule="Gank_io" customModuleProvider="target" sceneMemberID="viewController">
@@ -58,7 +58,7 @@
                             <outlet property="delegate" destination="5j6-Y6-81E" id="6Wr-cL-kEC"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="干货集中营" id="ALe-oU-ZKa">
+                    <navigationItem key="navigationItem" title="Mank" id="ALe-oU-ZKa">
                         <barButtonItem key="leftBarButtonItem" title="分类" id="xie-H2-lii">
                             <connections>
                                 <action selector="switchPressed:" destination="5j6-Y6-81E" id="pWh-qd-zsX"/>
@@ -90,7 +90,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Gank.io是一个简单的干货集中营iOS第三方客户端." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="6G1-20-kO1">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Mank是一个简单的干货集中营iOS第三方客户端." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="6G1-20-kO1">
                                 <rect key="frame" x="20" y="72" width="560" height="508"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>

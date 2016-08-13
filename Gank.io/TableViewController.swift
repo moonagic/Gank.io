@@ -235,7 +235,7 @@ class TableViewController: UITableViewController {
                     })
                 }
             }
-        } else if self.mode == 3 {
+        } /*else if self.mode == 3 {
             let count:NSInteger = 50
             let page:NSInteger = self.dataOfAndorid.count/count
             weak var weakSelf = self
@@ -266,7 +266,7 @@ class TableViewController: UITableViewController {
                     })
                 }
             }
-        }
+        }*/
     }
     
     @IBAction func switchPressed(sender: AnyObject) {

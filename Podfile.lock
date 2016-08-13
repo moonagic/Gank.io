@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (3.4.1)
-  - MJRefresh (3.1.8)
+  - MJRefresh (3.1.12)
 
 DEPENDENCIES:
   - Alamofire
@@ -8,7 +8,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
-  MJRefresh: d226bbe0b1ec398f426ba1dc99319b4e51182e19
+  MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
 
 PODFILE CHECKSUM: f2e9dd9f523da7a4271ad3b3bdcace444df7d2c4
 
