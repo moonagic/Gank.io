@@ -24,25 +24,25 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.table.dataSource = self;
         self.title = "详情"
         
-        self.table.tableFooterView = UIView.init(frame: CGRectZero)
+        self.table.tableFooterView = UIView.init(frame: CGRect.zero)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        let ud:UserDefaults = UserDefaults.standard
         
-        if let data:NSData = ud.objectForKey("detail-\(self.data)") as? NSData {
-            self.dic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary
+        if let data:Data = ud.object(forKey: "detail-\(self.data)") as? Data {
+            self.dic = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary
             self.table.reloadData()
         }
         
         if self.needReload {
-            let params:String = self.data.stringByReplacingOccurrencesOfString("-", withString: "/")
+            let params:String = self.data.replacingOccurrences(of: "-", with: "/")
             let str:String = baseUrl+url_day+params
             print(str)
             weak var weakSelf = self
-            Alamofire.request(.GET, str).responseJSON { response in
+            Alamofire.request(str, method: .get).responseJSON { response in
 //                print(response.request)  // original URL request
 //                print(response.response) // URL response
 //                print(response.data)     // server data
@@ -50,14 +50,13 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 
                 if let strongSelf = weakSelf {
                     if let JSON = response.result.value {
-                        weakSelf!.dic = JSON as? NSDictionary
-                        print(strongSelf.dic)
+                        strongSelf.dic = JSON as? NSDictionary
                         
-                        let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-                        let nsdata:NSData = NSKeyedArchiver.archivedDataWithRootObject(self.dic!)
-                        ud.setObject(nsdata, forKey: "detail-\(strongSelf.data)")
+                        let ud:UserDefaults = UserDefaults.standard
+                        let nsdata:NSData = NSKeyedArchiver.archivedData(withRootObject: self.dic!) as NSData
+                        ud.set(nsdata, forKey: "detail-\(strongSelf.data)")
                     }
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async() {
                         strongSelf.table.reloadData()
                     }
                 }
@@ -75,73 +74,73 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         // Dispose of any resources that can be recreated.
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         if (self.dic != nil) {
-            let category:NSArray = (self.dic?.valueForKey("category"))! as! NSArray
+            let category:NSArray = (self.dic?.value(forKey: "category"))! as! NSArray
             return category.count
         } else {
             return 0
         }
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let category:NSArray     = (self.dic?.valueForKey("category"))! as! NSArray
-        var title:String! = category.objectAtIndex(section) as! String
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let category:NSArray     = (self.dic?.value(forKey: "category"))! as! NSArray
+        var title:String! = category.object(at: section) as! String
         if title == "Android" {
             title = "Other"
         }
         return title
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let category:NSArray     = (self.dic?.valueForKey("category"))! as! NSArray
-        let results:NSDictionary = self.dic?.valueForKey("results") as! NSDictionary
-        let sectionArr:NSArray = results.valueForKey(category.objectAtIndex(section) as! String) as! (NSArray)
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let category:NSArray     = (self.dic?.value(forKey: "category"))! as! NSArray
+        let results:NSDictionary = self.dic?.value(forKey: "results") as! NSDictionary
+        let sectionArr:NSArray = results.value(forKey: category.object(at: section) as! String) as! (NSArray)
         
         
         return sectionArr.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier:String = "detailcell"
         
-        let cell:DetailCell = (tableView.dequeueReusableCellWithIdentifier(identifier) as? DetailCell)!
+        let cell:DetailCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? DetailCell)!
         
-        let category:NSArray     = (self.dic?.valueForKey("category"))! as! NSArray
-        let results:NSDictionary = self.dic?.valueForKey("results") as! NSDictionary
-        let sectionArr:NSArray = results.valueForKey(category.objectAtIndex(indexPath.section) as! String) as! (NSArray)
-        let dic:NSDictionary = sectionArr.objectAtIndex(indexPath.row) as! NSDictionary
+        let category:NSArray     = (self.dic?.value(forKey: "category"))! as! NSArray
+        let results:NSDictionary = self.dic?.value(forKey: "results") as! NSDictionary
+        let sectionArr:NSArray = results.value(forKey: category.object(at: indexPath.section) as! String) as! (NSArray)
+        let dic:NSDictionary = sectionArr.object(at: indexPath.row) as! NSDictionary
         
-        let type:String = category.objectAtIndex(indexPath.section) as! String
+        let type:String = category.object(at: indexPath.section) as! String
         
         if type == "休息视频" {
-            cell.colorTag.backgroundColor = UIColor.grayColor()
+            cell.colorTag.backgroundColor = UIColor.gray
         } else if type == "瞎推荐" {
-            cell.colorTag.backgroundColor = UIColor.lightGrayColor()
+            cell.colorTag.backgroundColor = UIColor.lightGray
         } else if type == "前端" {
-            cell.colorTag.backgroundColor = UIColor.cyanColor()
+            cell.colorTag.backgroundColor = UIColor.cyan
         } else if type == "拓展资源" {
-            cell.colorTag.backgroundColor = UIColor.blueColor()
+            cell.colorTag.backgroundColor = UIColor.blue
         } else if type == "Android" {
-            cell.colorTag.backgroundColor = UIColor.greenColor()
+            cell.colorTag.backgroundColor = UIColor.green
         } else if type == "iOS" {
-            cell.colorTag.backgroundColor = UIColor.redColor()
+            cell.colorTag.backgroundColor = UIColor.red
         } else if type == "福利" {
-            cell.colorTag.backgroundColor = UIColor.brownColor()
+            cell.colorTag.backgroundColor = UIColor.brown
         }
         
-        cell.titleLabel.text = dic.valueForKey("desc") as? String
+        cell.titleLabel.text = dic.value(forKey: "desc") as? String
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView .deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView .deselectRow(at: indexPath, animated: true)
         
-        let category:NSArray     = (self.dic?.valueForKey("category"))! as! NSArray
-        let results:NSDictionary = self.dic?.valueForKey("results") as! NSDictionary
-        let sectionArr:NSArray = results.valueForKey(category.objectAtIndex(indexPath.section) as! String) as! (NSArray)
-        let dic:NSDictionary = sectionArr.objectAtIndex(indexPath.row) as! NSDictionary
-        let str:String = (dic.valueForKey("url") as? String)!
+        let category:NSArray     = (self.dic?.value(forKey: "category"))! as! NSArray
+        let results:NSDictionary = self.dic?.value(forKey: "results") as! NSDictionary
+        let sectionArr:NSArray = results.value(forKey: category.object(at: indexPath.section) as! String) as! (NSArray)
+        let dic:NSDictionary = sectionArr.object(at: indexPath.row) as! NSDictionary
+        let str:String = (dic.value(forKey: "url") as? String)!
         self.openUrlWithSafariViewContoller(str)
     }
 
@@ -149,16 +148,16 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         print("prepareForSegue")
     }
     
-    func openUrlWithSafariViewContoller(urlStr:String) {
-        let safariVC = SFSafariViewController(URL: NSURL(string:urlStr)!, entersReaderIfAvailable: true)
+    func openUrlWithSafariViewContoller(_ urlStr:String) {
+        let safariVC = SFSafariViewController(url: URL(string:urlStr)!, entersReaderIfAvailable: true)
         
-        presentViewController(safariVC, animated: true, completion: nil)
+        present(safariVC, animated: true, completion: nil)
     }
     
 }
